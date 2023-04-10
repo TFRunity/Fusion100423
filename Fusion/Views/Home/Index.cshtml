@@ -1,0 +1,25 @@
+﻿@model List<UserAtSite>
+@{ foreach (UserAtSite user in Model)
+    {
+    <tr>
+        <td>
+            @user.Name
+        </td>
+        <td>
+            @user.Description
+        </td>
+        <td>
+            <img href="@user.MainPicture"/>
+        </td>
+        <td>
+            @user.Year
+        </td>
+        <td>
+            @user.FutureJob
+        </td>
+    </tr>
+    }
+}
+<a href="@Url.Action("Register","Account")"><h2>Зарегистрироваться(Добавить пользователя)</h2></a>
+<a href="@Url.Action("List", "Moderator")"><h2>Тыкни сюда, для модерации людей(УБРАТЬ НА РЕЛИЗЕ)</h2></a>
+<a href="@Url.Action("Create","Roles")">Добавление роли пользователю(УБрать как добавлю себе роль)</a>

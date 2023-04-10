@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="/css/MainStyleSheet.css">
+</head>
+<body>
+    <div class="flex-container-div">
+        @if (User.Identity.IsAuthenticated)
+        {<div class="testing-div">
+                <p class="unselectable">@User.Identity.Name</p>
+                <form method="post" asp-controller="Account" asp-action="Personalarea">
+                    <input type="submit" value="Личный кабинет" />
+                </form>
+            </div>
+        }
+        else
+        { <div class="testing-div">
+                <a class="a-color" asp-controller="Account" asp-action="Login"><h2>Вход</h2></a>
+                <a class="a-color" asp-controller="Account" asp-action="Register"><h2>Регистрация</h2></a>
+            </div>
+        }
+
+        <a class="testing-div div-rightpos" href="@Url.Action("Index","Home") "><h2 class="first unselectable">На главную</h2></a>
+        <div>
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>
