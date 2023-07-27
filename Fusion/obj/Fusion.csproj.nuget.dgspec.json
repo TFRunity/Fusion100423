@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\Fusion.csproj": {}
+    "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\Fusion.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\Fusion.csproj": {
+    "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\Fusion.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\Fusion.csproj",
+        "projectUniqueName": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\Fusion.csproj",
         "projectName": "Fusion",
-        "projectPath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\Fusion.csproj",
+        "projectPath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\Fusion.csproj",
         "packagesPath": "C:\\Users\\Печенька\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\obj\\",
+        "outputPath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

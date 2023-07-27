@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +11,7 @@ using Fusion.Models;
 using Fusion.DatabaseMethods;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace Fusion
 {
@@ -35,6 +35,10 @@ namespace Fusion
             services.AddTransient<IRepository<UsersPicture>, DBModeratorMethods<UsersPicture>>();
             services.AddTransient<IUserMethods, UsersMethods>();
             services.AddTransient<IUserRepository<User>, DBUserMethods<User>>();
+            services.AddTransient<IProductMethods<Product>, ProductMethods<Product>>();
+            services.AddTransient<ICategoryMethods<Category>, CategoryMethods<Category>>();
+            services.AddTransient<IProductCategoryMethods<ProductCategory>, ProductCategoryMethods<ProductCategory>>();
+            services.AddTransient<IOrderRepository<Order>, OrderMethods<Order>>();
             services.ConfigureApplicationCookie(config =>
                 {
                     config.LoginPath = "/Account/Login";
@@ -93,27 +97,14 @@ namespace Fusion
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
-                endpoints.MapControllerRoute(
-                    name: "Moderator",
-                    pattern: "{controller=Moderator}/{action=List}/{FirstSiteModel?}");
-                endpoints.MapControllerRoute(
-                    name: "ModeratorEdit",
-                    pattern: "{controller=Moderator}/{action=EditUser}/{editedUser}");
-                endpoints.MapControllerRoute(
-                    name: "ModeratorEdit",
-                    pattern: "{controller=Moderator}/{action=EditedUser}/{editedUser}");
-                endpoints.MapControllerRoute(
-                    name: "ModeratorPicture",
-                    pattern: "{controller=Moderator}/{action=AddPicture}/{model}");
-                endpoints.MapControllerRoute(
-                    name: "ModeratorPictures",
-                    pattern: "{controller=Moderator}/{action=UsersPictures}/{email}");
-                endpoints.MapControllerRoute(
-                    name: "Account",
-                    pattern: "{controller=Account}/{action=Register}/{user?}");
+                //endpoints.MapControllerRoute(  
+                //    name: "Moderator",      
+                //    pattern: "{controller=Moderator}/{action=List}/{FirstSiteModel?}");
                 endpoints.MapRazorPages();
             });
+            //Убрать на релизе
             CreateRoles(serviceProvider).Wait();
+            MakeMockSeed(serviceProvider).Wait();
         }
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
@@ -151,6 +142,39 @@ namespace Fusion
                 }
             }
         }
+        private async Task MakeMockSeed(IServiceProvider serviceProvider)
+        {
+            using (serviceProvider.GetRequiredService<IServiceScopeFactory>()
+                        .CreateScope())
+            {
+                var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<UserRole>>();
+                var _user = await userManager.FindByEmailAsync("adex@gmail.com");
+                if (_user == null)
+                {
+                    string pwd = "1TFRunity";
+                    User user1 = new User { UserName = "Aboba1", Email = "adex@gmail.com", FutureJob = "aboba" };
+                    User user2 = new User { UserName = "Aboba2", Email = "acex@gmail.com", FutureJob = "aboba" };
+                    User user3 = new User { UserName = "Aboba3", Email = "awex@gmail.com", FutureJob = "aboba" };
+                    List<User> users = new List<User>();
+                    users.Add(user1);
+                    users.Add(user2);
+                    users.Add(user3);
+                    foreach (User user in users)
+                    {
+                        await userManager.CreateAsync(user, pwd);
+                    }
+                }
+            }
+        }
     }
     //P.S. Не ставил миграции, т.к. не имеет смысла(проект слишком маленький и нерасширяемый на большие масштабы)
 }
+//Весь оставшийся Бекэнд
+//TO DO: 
+//      1)Изменение через продукт
+//      2)Добавление продуктов в корзину, (если не аутентифицирован, то кидать на страничку login)
+//      2)=>3)Изменение внешнего дизайна и общего состояния вьюхи
+//      2)=>4)Просмотр заказов через отдельную страницу + личную страницу ( историю заказов )
+//      Tooltip Передавать айди ордера через ViewBag
+/////////////////////////////////////////////////////Сделать 2 свойство категории, чтобы адекватно прописывались названия

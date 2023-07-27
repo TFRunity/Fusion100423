@@ -1,8 +1,5 @@
-﻿using Fusion.Models;
-using Fusion.ViewModels;
-using System;
+﻿using Fusion.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Fusion.Interfaces

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Fusion.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Fusion.Interfaces;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System;
+using System.Collections.Generic;
 
 namespace Fusion.Controllers
 {
@@ -16,12 +16,17 @@ namespace Fusion.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IOrderRepository<Order> _orderRepository;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IOrderRepository<Order> orderRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _orderRepository = orderRepository;
         }
+
+        //Authentification Methods
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -52,9 +57,14 @@ namespace Fusion.Controllers
             }
             return View(model);
         }
-        public IActionResult PersonalArea()
+        public async Task<IActionResult> PersonalArea()
         {
-            //Оформить личный кабинет, СДЕЛАТЬ СРАЗУ
+            User user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+        [Authorize(Policy = "Manager")]
+        public IActionResult AdminArea()
+        {
             return View();
         }
         [HttpGet]
@@ -87,12 +97,47 @@ namespace Fusion.Controllers
             return View(model);
         }
         [Authorize(Policy = "Member")]
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+
+        //1.Страничка с просмотром заказа 
+        //2.Личный кабинет, в котором отслеживаются прошлые заказы
+        //3.Страничка, создающая сам заказ (сделано)
+
+        /// <summary>
+        /// First method called by user, which creates First Order (Call if user's CurrentOrderId == null)
+        /// </summary>
+        /// <returns>Relate to MainView</returns>
+        public async Task<IActionResult> Cart(string UserEmail, Guid ProductId)
+        {
+            await _orderRepository.Create(ProductId, UserEmail);
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Order(Guid OrderId)
+        {
+            return View(await _orderRepository.Get(OrderId));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Order(Order order)
+        {
+            await _orderRepository.Update(order);
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> DeleteProduct(Guid ProductId, Guid OrderId)
+        {
+            await _orderRepository.DeleteObjFromOrder(ProductId);
+            return RedirectToAction(nameof(Order), new { OrderId = OrderId });
+        }
+        public async Task<IActionResult> ConfirmOrder(Guid OrderId)
+        {
+            await ConfirmOrder(OrderId);
+            return RedirectToAction(nameof(PersonalArea));
         }
     }
 }

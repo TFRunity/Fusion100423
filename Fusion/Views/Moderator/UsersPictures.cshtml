@@ -1,8 +1,12 @@
 ﻿@model List<UsersPicture>
-@{ 
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+@{await Html.RenderPartialAsync("_Navbar", viewModel);}
+@{
     int i = 0;
 }
-@{ 
+@{
     <div>
         @{
             if (Model != null)
@@ -16,10 +20,14 @@
             }
             else
             {
-                <a href="@Url.Action("List", "Moderator")"><h2>Картинок нету, нельзя их вывести.
-                        Попробуй добавить их </h2></a>
+                <a href="@Url.Action("List", "Moderator")">
+                    <h2>
+                        Картинок нету, нельзя их вывести.
+                        Попробуй добавить их
+                    </h2>
+                </a>
             }
         }
     </div>
-    
+
 }

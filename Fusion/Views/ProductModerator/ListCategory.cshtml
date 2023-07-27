@@ -1,0 +1,47 @@
+﻿@model List<Category>
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background edit-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-category" style="max-height: auto">
+        @{
+            if (Model != null)
+                foreach (Category category in Model)
+                {
+                    <div class="mini-flex-container">
+                        <div class="left">
+                            <h1>@category.Name</h1>
+                        </div>
+                        @if (category.ProductCategories != null)
+                        {
+                            <h2>Все продукты, связанные с этой категорией</h2>
+                            @foreach (ProductCategory relationship in category.ProductCategories)
+                            {
+                                <div>
+                                    <h3>@relationship.Product.Name</h3>
+                                </div>
+                                <a href="@Url.Action()"><h4>Удалить эту связь</h4></a>
+                            }
+                            //Добавить изменение связи (удалить/добавить связь)
+                        }
+                        else
+                        {
+                            <div>
+                                <h3>У категории нет продуктов</h3>
+                            </div>
+                        }
+                    </div>
+                    <a class="a-button" href="@Url.Action("EditCategory", "ProductModerator", new { id = category.Id})"><h3>Изменить</h3></a>
+                    <a class="a-button" href="@Url.Action("DeleteCategory","ProductModerator", new { id = category.Id})"><h3>Удалить</h3></a>
+                }
+        }
+        <div class="mini-flex-container">
+            <a class="a-button" href="@Url.Action("CreateCategory", "ProductModerator")">
+                <h3>
+                    Создать категорию
+                </h3>
+            </a>
+        </div>
+    </div>
+</div>

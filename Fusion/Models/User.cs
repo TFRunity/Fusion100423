@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
 namespace Fusion.Models
@@ -12,11 +8,14 @@ namespace Fusion.Models
     {
         public override string UserName { get => base.UserName; set => base.UserName = value; }
         public string Year { get; set; }
+        public string MainPicture { get; set; } //URL
+        public string Gradient { get; set; } //Chooseable
+        public string BackgroundPicture { get; set; } //Moderable
+        public string Description { get; set; } 
+        public string FutureJob { get; set; } //Selectable
+        //Relationships
         public virtual List<UsersPicture> UsersPictures { get; set; } = new List<UsersPicture>();
-        public string MainPicture { get; set; }
-        public string Gradient { get; set; }
-        public string BackgroundPicture { get; set; }
-        public string Description { get; set; }
-        public string FutureJob { get; set; }
+        public virtual List<Order> Orders { get; set; } = new List<Order>();
+        public Guid CurrentOrderId { get; set; }
     }
 }

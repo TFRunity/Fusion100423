@@ -2,8 +2,6 @@
 using Fusion.Interfaces;
 using Fusion.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +17,7 @@ namespace Fusion.DatabaseMethods
         {
             _appDBContext = appDBContext;
             _userManager = userManager;
-            }
+        }
         public async Task Create(T copyFirstModel)
         {
             User olduser = await _userManager.FindByEmailAsync(copyFirstModel.User.Email);

@@ -1,0 +1,27 @@
+﻿@model AddCategoryViewModel
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background add-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-center-box">
+        <h1>Add Product</h1>
+        <form asp-action="CreateCategory" asp-controller="ProductModerator" asp-antiforgery="true" method="post">
+            <div class="input-group">
+                <div class="input-field">
+                    <i class="fa-brands fa-connectdevelop"></i>
+                    <input asp-for="Name" placeholder="Название Категории" />
+                    <span asp-validation-for="Name"></span>
+                </div>
+                <div class="input-field">
+                    <i class="fa-solid fa-tenge-sign"></i>
+                    <input asp-for="Fullname" placeholder="Название(На русском)" />
+                    <span asp-validation-for="Fullname"></span>
+                </div>
+                <div class="btn-field">
+                    <input type="submit" value="Создать" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

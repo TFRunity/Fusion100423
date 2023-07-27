@@ -1,0 +1,71 @@
+﻿@model List<Product>
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background edit-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-category" style="max-height:auto">
+        @{
+            if (Model != null)
+                foreach (Product product in Model)
+                {
+
+                    <div class="mini-flex-container">
+                        <div class="left">
+                            <h2>
+                                @product.Name
+                            </h2>
+                        </div>
+                        <div class="left">
+                            <h2>
+                                @product.Id
+                            </h2>
+                        </div>
+                        <div>
+                            @if (product.ProductCategories != null)
+                            {
+                                foreach (ProductCategory relationship in product.ProductCategories)
+                                {
+                                    <h2>
+                                        Находится в данной категори: @relationship.Category.Name
+                                    </h2>
+                                    <a class="a-button" href="@Url.Action("DeleteProductRelationship","ProductModerator", new { productId = relationship.ProductId, categoryId = relationship.CategoryId})"><h4>Удалить</h4></a>
+                                }
+                            }
+                            else
+                            {
+                                <h2>
+                                    Категория продукта: null
+                                </h2>
+                            }
+                        </div>
+                        <div>
+                            <a class="a-button" href="@Url.Action("ChangeProductCategory", "ProductModerator", new { id = product.Id})"><h2>Изменить Категории(НЕ ТРОГАТЬ)</h2></a>
+                            <a class="a-button" href="@Url.Action("CreateProductRelationship", "ProductModerator", new { productId = product.Id})"><h4>Добавить связь</h4></a>
+                        </div>
+                        <div>
+                            <a class="a-button" href="@Url.Action("EditProduct", "ProductModerator", new { id = product.Id})">
+                                <h2>
+                                    Изменить
+                                </h2>
+                            </a>
+                        </div>
+                        <div>
+                            <a class="a-button" href="@Url.Action("DeleteProduct", "ProductModerator", new { id = product.Id})">
+                                <h2>
+                                    Удалить
+                                </h2>
+                            </a>
+                        </div>
+                    </div>
+                }
+            <div class="mini-flex-container right">
+                <a class="a-button" href="@Url.Action("CreateProduct", "ProductModerator")">
+                    <h2>
+                        Создать новый продукт
+                    </h2>
+                </a>
+            </div>
+        }
+    </div>
+</div>

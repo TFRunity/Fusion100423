@@ -1,0 +1,59 @@
+﻿@model Order
+@inject IProductMethods<Product> _methods
+@inject UserManager<User> _userManager
+@{
+    User user = await _userManager.FindByNameAsync(User.Identity.Name);
+    List<Product> products = new List<Product>();
+    foreach (ProductId productid in Model.ProductIds)
+    {
+        Product product = await _methods.Get(productid.IdFromProduct);
+        products.Add(product);
+    }
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = true, OrderId = Model.Id };
+}
+@{ await Html.RenderPartialAsync("_Navbar", viewModel);}
+<article class="article-title">
+    <h2>Ваш заказ:</h2>
+</article>
+<section class="row flex--wrap justify-content-sm-center">
+    @foreach (Product product in products)
+    {
+        <div class="col-3 block-product justify-content-sm-center text-center">
+            <div class="justify-content-sm-center m-3">
+                @{
+                    if (product.Url != null)
+                    {
+                        <img src="@product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+                    }
+                    else
+                    {
+                        <img src="assets/img/logo.jpg" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+                    }
+                }
+            </div>
+            <h3 class="text-start">
+                @product.Name
+            </h3>
+            <div class="p-1">
+                <h6 class="text-start" style="color: rgb(137 143 180);">
+                    @product.Description
+                </h6>
+            </div>
+            <div class="row">
+                <h4 class="col-5 text-start p-1 m-2">
+                    @product.Price ₽
+                </h4>
+            </div>
+            <div class="row">
+                @*Изменить на счетчик. Сделать особенное действие*@
+                <a class="btn-success btn" href=""><h4>Кол-во</h4></a>
+                <a class="btn-danger btn" href="@Url.Action("DeleteProduct","Account", new { ProductId = product.Id, OrderId = Model.Id })"><h4>Удалить</h4></a>
+            </div>
+        </div>
+    }
+</section>
+<section class="row container-fluid justify-content-end">
+    <h3>Общая стоимость: @Model.TotalPrice ₽</h3>
+    @*Изменить *@
+    <a class="btn btn-check" href="@Url.Action("ConfirmOrder","Account", new { OrderId = Model.Id })"><h3>Оплатить</h3></a>
+</section>

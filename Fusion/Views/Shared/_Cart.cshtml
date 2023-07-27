@@ -1,0 +1,28 @@
+﻿@model OrderNavbarViewModel
+@inject IOrderRepository<Order> _ordermethods
+@{
+    Guid model = Model.OrderId;
+}
+@{          switch(Model.Authentificated)
+        {
+            case false:
+                <div class="col-md-1">
+                    <a class="button-basket" data-size="medium" href="@Url.Action("Login","Account")">
+                        <h6>Корзина</h6>
+                        <h6 style="opacity: 0%">s</h6>
+                        <i class="fa-solid fa-trailer"></i>
+                    </a>
+                </div>
+                break;
+            default:
+                <div class="col-md-1">
+                    <a class="button-basket" data-size="medium" href="@Url.Action("Order","Account", new { OrderId = model })">
+                        <h6>Корзина</h6>
+                        <h6 style="opacity: 0%">s</h6>
+                        <i class="fa-solid fa-trailer"></i>
+                    </a>
+                </div>
+                break;
+        }
+
+}

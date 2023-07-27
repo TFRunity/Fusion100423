@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Fusion",
+    "\\Fusion\\Controllers",
+    "\\Fusion\\Views",
+    "\\Fusion\\Views\\Account",
+    "\\Fusion\\Views\\ProductModerator",
+    "\\Fusion\\Views\\Roles",
+    "\\Fusion\\Views\\Shared",
+    "\\Fusion\\wwwroot",
+    "\\Fusion\\wwwroot\\css"
+  ],
+  "PreviewInSolutionExplorer": false
+}

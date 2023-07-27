@@ -1,12 +1,8 @@
-﻿using Fusion.DataBase;
-using Fusion.Interfaces;
+﻿using Fusion.Interfaces;
 using Fusion.Models;
 using Fusion.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Fusion.DatabaseMethods
@@ -49,6 +45,8 @@ namespace Fusion.DatabaseMethods
             oldmodel.UserName = updatingmodel.UserName;
             oldmodel.Year = updatingmodel.Year;
             oldmodel.Description = updatingmodel.Description;
+            oldmodel.Gradient = updatingmodel.Gradient;
+            oldmodel.MainPicture = updatingmodel.MainPicture;
             await _userManager.UpdateAsync(oldmodel);
         }
     }

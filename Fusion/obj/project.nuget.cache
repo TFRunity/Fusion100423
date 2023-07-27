@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mGDuGzMI5I2IFtGWsuQAfZ7pMG9PllGVALyJiX2IQMJMuGSKzdDC8sJT87F4crpECANdBEdMCMNNwcaxysK0Eg==",
+  "dgSpecHash": "KdPewawTsg0EKi2V3V5fg3LvirNH89LYGoIUtJggHh1E7mWY3VMGUVDWxQmIrsO61S6YIwcD2+K+xRtni8dkyA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion\\Fusion.csproj",
+  "projectFilePath": "C:\\Users\\Печенька\\source\\repos\\Fusion\\Fusion100423(1)\\Fusion\\Fusion.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Печенька\\.nuget\\packages\\castle.core\\4.4.0\\castle.core.4.4.0.nupkg.sha512",
     "C:\\Users\\Печенька\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",

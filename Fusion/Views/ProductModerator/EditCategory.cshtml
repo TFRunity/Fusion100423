@@ -1,0 +1,36 @@
+﻿@model Category
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background edit-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-center-box">
+        <h1>Edit Product</h1>
+        <form asp-action="EditCategory" asp-controller="ProductModerator" asp-antiforgery="true" method="post">
+            <div class="input-group">
+                <label asp-for="Name"></label>
+                <div class="input-field">
+                    <i class="fa-solid fa-pizza-slice"></i>
+                    <input asp-for="Name" placeholder="Название" />
+                    <span asp-validation-for="Name"></span>
+                </div>
+                <label asp-for="Fullname"></label>
+                <div class="input-field">
+                    <i class="fa-solid fa-tenge-sign"></i>
+                    <input asp-for="Fullname" placeholder="Название(На русском)" />
+                    <span asp-validation-for="Fullname"></span>
+                </div>
+                <label asp-for="Id" style="visibility: hidden"></label>
+                <div class="input-field" style="visibility: hidden">
+                    <i class="fa-solid fa-ruble-sign"></i>
+                    <input asp-for="Id" placeholder="Айди" />
+                    <span asp-validation-for="Id"></span>
+                </div>
+                <div class="btn-field">
+                    <input type="submit" value="Сохранить" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<i class="fa-solid fa-tenge-sign"></i>

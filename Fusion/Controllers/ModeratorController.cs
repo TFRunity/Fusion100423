@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Fusion.Models;
 using System.Threading.Tasks;
 using Fusion.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Fusion.Controllers

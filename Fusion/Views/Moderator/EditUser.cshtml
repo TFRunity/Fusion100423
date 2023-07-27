@@ -1,25 +1,29 @@
 ﻿@model User
-    @{ 
-        User user = Model;
-    }
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+@{await Html.RenderPartialAsync("_Navbar", viewModel);}
 <div>
-    <h2>@user.UserName</h2>
+    <h2>@Model.UserName</h2>
 </div>
 <div>
-    <h2>@user.FutureJob</h2>
+    <h2>@Model.FutureJob</h2>
 </div>
 <div>
-    <h2>@user.Year</h2>
+    <h2>@Model.Year</h2>
 </div>
 <div>
-    <h2>@user.Description</h2>
+    <h2>@Model.Description</h2>
+</div>
+<div>
+    <h2>Айди заказа @Model.CurrentOrderId</h2>
 </div>
 <div>
     <h4>Фоточки человека</h4>
     @{
-        if (user.UsersPictures != null)
+        if (Model.UsersPictures != null)
         {
-            @foreach (UsersPicture picture in user.UsersPictures)
+            @foreach (UsersPicture picture in Model.UsersPictures)
             {
                 <div>
                     <img src="@picture.URL" />
@@ -44,7 +48,7 @@
         <input asp-for="Description" />
     </div>
     <div>
-        <h2>Поменяйте описание</h2>
+        <h2>Поменяйте Работу</h2>
         <label asp-for="FutureJob"></label>
         <input asp-for="FutureJob" />
     </div>
@@ -57,6 +61,11 @@
         <h2>Поменяйте почту</h2>
         <label asp-for="Email"></label>
         <input asp-for="Email" />
+    </div>
+    <div>
+        <h2>Поменяйте Главную картинку</h2>
+        <label asp-for="MainPicture"></label>
+        <input asp-for="MainPicture" />
     </div>
     <input type="submit" value="Save" />
 </form>

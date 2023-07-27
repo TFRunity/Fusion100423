@@ -1,0 +1,70 @@
+﻿@model OrderNavbarViewModel
+@{
+    bool authentificated = User.Identity.IsAuthenticated;
+}
+<nav class="nav-class nav-min">
+    <div class="main-box row">
+        <div class="col-md-1 justify-content-md-end ms-3">
+            <a href="@Url.Action("Index", "Home")">
+                <img class="img-mainboard justify-content-end align-self-md-auto" src="~/assets/img/logo.jpg" />
+            </a>
+        </div>
+        <div class="col-md-1 left">
+            <li class="li-list">
+                <a href="#Pizza">
+                    Пицца
+                </a>
+            </li>
+        </div>
+        <div class="col-md-1 left">
+            <li class="li-list">
+                <a href="#Rolls">
+                    Роллы
+                </a>
+            </li>
+        </div>
+        <div class="col-md-1 left">
+            <li class="li-list">
+                <a href="#Burgers">
+                    Бургеры
+                </a>
+            </li>
+        </div>
+        <div class="col-md-1 left">
+            <li class="li-list">
+                <a href="#Soda">
+                    Напитки
+                </a>
+            </li>
+        </div>
+        @{
+            if (User.IsInRole("Admin"))
+            {
+                <div class="dropdown col-md-1 align-self-center">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item justify-content-md-start" href="@Url.Action("Index","Roles")">Роли</a></li>
+                        <li><a class="dropdown-item justify-content-md-start" href="@Url.Action("ListProduct","ProductModerator")">Продукты</a></li>
+                        <li><a class="dropdown-item justify-content-md-start" href="@Url.Action("ListCategory","ProductModerator")">Категории</a></li>
+                        <li><a class="dropdown-item justify-content-md-start" href="@Url.Action("List","Moderator")">Пользователи</a></li>
+                    </ul>
+                </div>
+            }
+        }
+        @{await Html.RenderPartialAsync("_Cart", Model); }
+        <div class="col-md-1">
+            @{
+                if (authentificated)
+                {
+                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("PersonalArea","Account")"><i class="fa-solid fa-user"></i></a>
+                }
+                else
+                {
+                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("Login","Account")"><i class="fa-solid fa-right-to-bracket"></i><i class="fa-solid fa-user"></i></a>
+                }
+            }
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,38 @@
+﻿@model ChangeRelationshipsProductViewModel
+@inject IProductMethods<Product> _productMethods
+@inject ICategoryMethods<Category> _categoryMethods
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background edit-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-center-box">
+        <h1>Edit Product</h1>
+        <form asp-action="ChangeProductCategories" asp-controller="ProductModerator" asp-antiforgery="true" method="post">
+            <div class="input-group">
+                <div class="form-check">
+                    @foreach (Category category in Model.RelationshipsToUpdate)
+                    {
+                        <input type="checkbox" name="roles" value="@category.Name"
+                               @(Model.RelationshipsToUpdate.Contains(category) ? "checked=\"checked\"" : "") />@category.Name <br />
+                        }
+                </div>
+                <input type="hidden" name="CurrentRelationships" value="@Model.CurrentRelationships" />
+                <label asp-for="ProductId" style="visibility: hidden"></label>
+                <div class="input-field" style="visibility: hidden">
+                    <i class="fa-solid fa-ruble-sign"></i>
+                    <input asp-for="ProductId" placeholder="Айди" />
+                    <span asp-validation-for="ProductId"></span>
+                </div>
+                <div class="btn-field">
+                    <input type="submit" value="Сохранить" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
