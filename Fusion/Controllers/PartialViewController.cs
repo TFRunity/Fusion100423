@@ -21,5 +21,9 @@ namespace Fusion.Controllers
         {
             return PartialView("_Cart", model);
         }
+        public IActionResult Counter(CounterViewModel model)
+        {
+            return PartialView("_Counter", model);
+        }
     }
 }

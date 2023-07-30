@@ -7,6 +7,7 @@ using Fusion.Models;
 using Fusion.DataBase;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Fusion.ViewModels;
 
 namespace Fusion.DatabaseMethods
 {
@@ -14,44 +15,51 @@ namespace Fusion.DatabaseMethods
     {
         private readonly IdentityDBContext _context;
         private readonly UserManager<User> _userManager;
-        public OrderMethods(IdentityDBContext context, UserManager<User> userManager)
+        private readonly IProductMethods<Product> _productMethods;
+        public OrderMethods(IdentityDBContext context, UserManager<User> userManager, IProductMethods<Product> productMethods)
         {
             _context = context;
             _userManager = userManager;
+            _productMethods = productMethods;
         }
         
         public async Task Create(Guid productId, string email)
         {
             User user = await _userManager.FindByEmailAsync(email);
+            Product product = await _productMethods.Get(productId);
             if (user.CurrentOrderId == Guid.Empty)
             {
                 Order order = new Order();
-                ProductId id = new ProductId() { IdFromProduct = productId };
+                ProductId id = new ProductId() { IdFromProduct = productId, PriceFromProduct = product.Price};
+                await _context.ProductIds.AddAsync(id);
                 order.ProductIds.Add(id);
-                await _context.SaveChangesAsync();
+                order.TotalPrice += id.PriceFromProduct * id.CurrentCount;
+                await _context.Orders.AddAsync(order);
                 user.CurrentOrderId = order.Id;
+                user.Orders.Add(order);
                 await _userManager.UpdateAsync(user);
                 await _context.SaveChangesAsync();
             }
             else
             {
                 Order order = await _context.Orders.FindAsync(user.CurrentOrderId);
-                ProductId id = new ProductId() { IdFromProduct = productId };
+                ProductId id = new ProductId() { IdFromProduct = productId, PriceFromProduct = product.Price };
+                await _context.ProductIds.AddAsync(id);
                 order.ProductIds.Add(id);
+                order.TotalPrice += id.PriceFromProduct * id.CurrentCount;
                 await _context.SaveChangesAsync();
             }
         }
-
+        //Доделать некоторые действия
         public async Task<bool> Delete(Guid orderId)
         {
+            List<ProductId> productIdsToDelete = await _context.ProductIds.Where(X => X.OrderId == orderId).ToListAsync();
+            _context.RemoveRange(productIdsToDelete);
             Order order = await _context.Orders.FindAsync(orderId);
-            if (order.Paid == true)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<Order> Get(Guid orderId)
@@ -70,44 +78,53 @@ namespace Fusion.DatabaseMethods
         public async Task Update(T updatingOrder)
         {
             Order order = await Get(updatingOrder.Id);
-            order.ProductIds = updatingOrder.ProductIds;
             order.Done = updatingOrder.Done;
-            order.TotalPrice = updatingOrder.TotalPrice;
             await _context.SaveChangesAsync();
         }
 
-        public async Task ConfirmOrder(Guid OrderId)
+        public async Task ConfirmOrder(Guid orderId, string email)
         {
-            Order order = await Get(OrderId);
+            Order order = await Get(orderId);
             order.Paid = true;
+            User user = await _userManager.FindByEmailAsync(email);
+            user.CurrentOrderId = Guid.Empty;
             await _context.SaveChangesAsync();
         }
 
-        public async Task Add(Guid OrderId, Guid ProductId)
+        //бесполезная хрень
+        public async Task Add(Guid orderId, Guid productId)
         {
-            Order order = await Get(OrderId);
-            ProductId productId = new ProductId() { IdFromProduct = ProductId };
-            order.ProductIds.Add(productId);
+            Order order = await Get(orderId);
+            ProductId _productId = new ProductId() { IdFromProduct = productId };
+            await _context.ProductIds.AddAsync(_productId);
+            order.ProductIds.Add(_productId);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteObjFromOrder(Guid id)
         {
             ProductId productId = await _context.ProductIds.FindAsync(id);
+            Order order = productId.Order;
+            order.TotalPrice -= productId.PriceFromProduct * productId.CurrentCount;
             _context.ProductIds.Remove(productId);
             await _context.SaveChangesAsync();
         }
-        public async Task Clear(Guid id)
+        public async Task Clear(Guid orderId)
         {
-            Order order = await Get(id);
-            order.ProductIds.Clear();
+            Order order = await Get(orderId);
+            _context.ProductIds.RemoveRange(order.ProductIds);
+            order.TotalPrice = 0;
             await _context.SaveChangesAsync();
         }
         //Special method for ProductId
-        public async Task ChangeCount(Guid ProductId, int Count)
+        public async Task ChangeCount(CounterViewModel viewModel)
         {
-            ProductId productId = await _context.ProductIds.FindAsync(ProductId);
-            productId.Count = Count;
+            ProductId productId = await _context.ProductIds.FindAsync(viewModel.ProductId);
+            Order order = productId.Order;
+            order.TotalPrice -= productId.PriceFromProduct * viewModel.PreviousCount;
+            order.TotalPrice += productId.PriceFromProduct * viewModel.CurrentCount;
+            productId.CurrentCount = viewModel.CurrentCount;
+            productId.PreviousCount = viewModel.CurrentCount;
             await _context.SaveChangesAsync();
         }
     }

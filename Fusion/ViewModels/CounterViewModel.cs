@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Fusion.ViewModels
 {
-    public class OrderNavbarViewModel
+    public class CounterViewModel
     {
         public Guid OrderId { get; set; }
-        public bool Authentificated { get; set; }
-        public bool Created { get; set; }
-        public string Email { get; set; }
+        public Guid ProductId { get; set; }
+        public int PreviousCount { get; set; }
+        public int CurrentCount { get; set; }
     }
 }

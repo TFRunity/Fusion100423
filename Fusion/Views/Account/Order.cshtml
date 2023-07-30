@@ -3,57 +3,64 @@
 @inject UserManager<User> _userManager
 @{
     User user = await _userManager.FindByNameAsync(User.Identity.Name);
-    List<Product> products = new List<Product>();
-    foreach (ProductId productid in Model.ProductIds)
-    {
-        Product product = await _methods.Get(productid.IdFromProduct);
-        products.Add(product);
-    }
-    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = true, OrderId = Model.Id };
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = true, OrderId = Model.Id, Email = Model.User.Email };
 }
 @{ await Html.RenderPartialAsync("_Navbar", viewModel);}
-<article class="article-title">
-    <h2>Ваш заказ:</h2>
-</article>
-<section class="row flex--wrap justify-content-sm-center">
-    @foreach (Product product in products)
-    {
-        <div class="col-3 block-product justify-content-sm-center text-center">
-            <div class="justify-content-sm-center m-3">
-                @{
-                    if (product.Url != null)
-                    {
-                        <img src="@product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+<div class="container mt-4">
+    <article class="d-flex justify-content-start row">
+        <h2>Ваш заказ:</h2>
+    </article>
+    <section class="row flex--wrap justify-content-sm-center">
+        @foreach (ProductId productId in Model.ProductIds)
+        {
+            Product product = await _methods.Get(productId.IdFromProduct);
+            <div class="col-3 block-product justify-content-sm-center text-center">
+                <div class="justify-content-sm-center m-3">
+                    @{
+                        if (product.Url != null)
+                        {
+                            <img src="@product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+                        }
+                        else
+                        {
+                            <img src="assets/img/logo.jpg" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+                        }
                     }
-                    else
-                    {
-                        <img src="assets/img/logo.jpg" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
-                    }
-                }
+                </div>
+                <h3 class="text-start">
+                    @product.Name
+                </h3>
+                <div class="p-1">
+                    <h6 class="text-start" style="color: rgb(137 143 180);">
+                        @product.Description
+                    </h6>
+                </div>
+                <div class="row">
+                    <h4 class="col-5 text-start p-1 m-2">
+                        @product.Price ₽
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col-5 align-self-center">
+                        @{
+                            CounterViewModel counter = new CounterViewModel() { OrderId = Model.Id, PreviousCount = productId.PreviousCount, ProductId = productId.Id };
+                            await Html.RenderPartialAsync("_Counter", counter);
+                        }
+                    </div>
+                    <div class="col-5 flex-column-reverse d-flex">
+                        <a class="btn-danger text-center btn btn-primary p-2 text-center mb-3" href="@Url.Action("DeleteProduct","Account", new { ProductId = productId.Id, OrderId = Model.Id })"><h4>Удалить</h4></a>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-start">
-                @product.Name
-            </h3>
-            <div class="p-1">
-                <h6 class="text-start" style="color: rgb(137 143 180);">
-                    @product.Description
-                </h6>
-            </div>
-            <div class="row">
-                <h4 class="col-5 text-start p-1 m-2">
-                    @product.Price ₽
-                </h4>
-            </div>
-            <div class="row">
-                @*Изменить на счетчик. Сделать особенное действие*@
-                <a class="btn-success btn" href=""><h4>Кол-во</h4></a>
-                <a class="btn-danger btn" href="@Url.Action("DeleteProduct","Account", new { ProductId = product.Id, OrderId = Model.Id })"><h4>Удалить</h4></a>
-            </div>
+        }
+    </section>
+    <div class="row justify-content-end">
+        <div>
+            <h3 class="article-title">Общая стоимость: @Model.TotalPrice ₽</h3>
         </div>
-    }
-</section>
-<section class="row container-fluid justify-content-end">
-    <h3>Общая стоимость: @Model.TotalPrice ₽</h3>
-    @*Изменить *@
-    <a class="btn btn-check" href="@Url.Action("ConfirmOrder","Account", new { OrderId = Model.Id })"><h3>Оплатить</h3></a>
-</section>
+        <div class="d-flex flex-row-reverse">
+            <a href="@Url.Action("ClearOrder","Account", new { orderId = Model.Id})" class="btn btn-danger p-2 col-2 ms-2"><h3>Очистить</h3></a>
+            <a class="btn btn-success p-2 col-2 m-0" href="@Url.Action("ConfirmOrder","Account", new {orderId = Model.Id, email = user.Email })"><h3>Оплатить</h3></a>
+        </div>
+    </div>
+</div>

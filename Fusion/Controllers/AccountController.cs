@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System;
 using System.Collections.Generic;
+using Fusion.DatabaseMethods;
 
 namespace Fusion.Controllers
 {
@@ -17,12 +18,14 @@ namespace Fusion.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IOrderRepository<Order> _orderRepository;
+        private readonly IUserRepository<User> _userMethods;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IOrderRepository<Order> orderRepository)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IOrderRepository<Order> orderRepository, IUserRepository<User> userMethods)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _orderRepository = orderRepository;
+            _userMethods = userMethods;
         }
 
         //Authentification Methods
@@ -57,9 +60,9 @@ namespace Fusion.Controllers
             }
             return View(model);
         }
-        public async Task<IActionResult> PersonalArea()
+        public async Task<IActionResult> PersonalArea(string email)
         {
-            User user = await _userManager.GetUserAsync(User);
+            User user = await _userManager.FindByEmailAsync(email);
             return View(user);
         }
         [Authorize(Policy = "Manager")]
@@ -134,10 +137,21 @@ namespace Fusion.Controllers
             await _orderRepository.DeleteObjFromOrder(ProductId);
             return RedirectToAction(nameof(Order), new { OrderId = OrderId });
         }
-        public async Task<IActionResult> ConfirmOrder(Guid OrderId)
+        public async Task<IActionResult> ConfirmOrder(Guid orderId, string email)
         {
-            await ConfirmOrder(OrderId);
-            return RedirectToAction(nameof(PersonalArea));
+            await _orderRepository.ConfirmOrder(orderId, email);
+            return RedirectToAction(nameof(PersonalArea), new { email = email });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeCount(CounterViewModel viewModel)
+        {
+            await _orderRepository.ChangeCount(viewModel);
+            return RedirectToAction(nameof(Order), new { OrderId = viewModel.OrderId });
+        }
+        public async Task<IActionResult> ClearOrder(Guid orderId)
+        {
+            await _orderRepository.Clear(orderId);
+            return RedirectToAction(nameof(Order), new { OrderId = orderId });
         }
     }
 }

@@ -3,26 +3,35 @@
 @{
     Guid model = Model.OrderId;
 }
-@{          switch(Model.Authentificated)
-        {
-            case false:
-                <div class="col-md-1">
-                    <a class="button-basket" data-size="medium" href="@Url.Action("Login","Account")">
-                        <h6>Корзина</h6>
-                        <h6 style="opacity: 0%">s</h6>
-                        <i class="fa-solid fa-trailer"></i>
-                    </a>
-                </div>
-                break;
-            default:
-                <div class="col-md-1">
-                    <a class="button-basket" data-size="medium" href="@Url.Action("Order","Account", new { OrderId = model })">
-                        <h6>Корзина</h6>
-                        <h6 style="opacity: 0%">s</h6>
-                        <i class="fa-solid fa-trailer"></i>
-                    </a>
-                </div>
-                break;
-        }
-
+@{
+    if (Model.Created == true && Model.Authentificated == true)
+    {
+        <div class="col-md-1">
+            <a class="button-basket" data-size="medium" href="@Url.Action("Order","Account", new { OrderId = model })">
+                <h6>Корзина</h6>
+                <h6 style="opacity: 0%">s</h6>
+                <i class="fa-solid fa-trailer"></i>
+            </a>
+        </div>
+    }
+    if (Model.Created == false && Model.Authentificated == false)
+    {
+        <div class="col-md-1">
+            <a class="button-basket" data-size="medium" href="@Url.Action("Login","Account")">
+                <h6>Корзина</h6>
+                <h6 style="opacity: 0%">s</h6>
+                <i class="fa-solid fa-trailer"></i>
+            </a>
+        </div>
+    }
+    if (Model.Created == false && Model.Authentificated == true)
+    {
+        <div class="col-md-1">
+            <a class="button-basket" data-size="medium" href="#">
+                <h6>Корзина</h6>
+                <h6 style="opacity: 0%">s</h6>
+                <i class="fa-solid fa-trailer"></i>
+            </a>
+        </div>
+    }
 }

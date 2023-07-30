@@ -216,3 +216,4 @@ C:\Users\Печенька\source\repos\Fusion\Fusion100423(1)\Fusion\obj\Debug\n
 C:\Users\Печенька\source\repos\Fusion\Fusion100423(1)\Fusion\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Navbar.cshtml.g.cs
 C:\Users\Печенька\source\repos\Fusion\Fusion100423(1)\Fusion\obj\Debug\netcoreapp3.1\Razor\Views\Account\Order.cshtml.g.cs
 C:\Users\Печенька\source\repos\Fusion\Fusion100423(1)\Fusion\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Cart.cshtml.g.cs
+C:\Users\Печенька\source\repos\Fusion\Fusion100423(1)\Fusion\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Counter.cshtml.g.cs

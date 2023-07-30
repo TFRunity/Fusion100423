@@ -1,4 +1,5 @@
-﻿using Fusion.Interfaces;
+﻿using Fusion.DataBase;
+using Fusion.Interfaces;
 using Fusion.Models;
 using Fusion.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +11,11 @@ namespace Fusion.DatabaseMethods
     public class DBUserMethods<T> : IUserRepository<T> where T : User
     {
         private readonly UserManager<User> _userManager;
-        public DBUserMethods(UserManager<User> userManager)
+        private readonly IdentityDBContext _appDBContext;
+        public DBUserMethods(UserManager<User> userManager, IdentityDBContext appDBContext)
         {
             _userManager = userManager;
+            _appDBContext = appDBContext;
         }
         public async Task Create(RegisterViewModel viewModel)
         {
@@ -27,7 +30,8 @@ namespace Fusion.DatabaseMethods
         public async Task<T> Get(string email)
         {
             T currentUser = (T)await _userManager.FindByEmailAsync(email);
-            return currentUser;
+            T user = (T)await _appDBContext.Users.FindAsync(currentUser.Id); 
+            return user;
         }
         public List<T> GetAll()
         {

@@ -1,12 +1,13 @@
 ﻿@model OrderNavbarViewModel
 @{
     bool authentificated = User.Identity.IsAuthenticated;
+
 }
 <nav class="nav-class nav-min">
     <div class="main-box row">
         <div class="col-md-1 justify-content-md-end ms-3">
             <a href="@Url.Action("Index", "Home")">
-                <img class="img-mainboard justify-content-end align-self-md-auto" src="~/assets/img/logo.jpg" />
+                <img class="img-mainboard justify-content-end align-self-md-auto rounded-circle" src="~/assets/img/logos.jpg" />
             </a>
         </div>
         <div class="col-md-1 left">
@@ -58,11 +59,11 @@
             @{
                 if (authentificated)
                 {
-                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("PersonalArea","Account")"><i class="fa-solid fa-user"></i></a>
+                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("PersonalArea","Account", new { email = Model.Email })"><i class="fa-solid fa-user"></i></a>
                 }
                 else
                 {
-                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("Login","Account")"><i class="fa-solid fa-right-to-bracket"></i><i class="fa-solid fa-user"></i></a>
+                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("Login","Account")"><i class="fa-solid fa-right-to-bracket"></i><h6 style="opacity: 0%">s</h6><i class="fa-solid fa-user"></i></a>
                 }
             }
         </div>
