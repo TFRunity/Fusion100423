@@ -53,5 +53,12 @@ namespace Fusion.DatabaseMethods
             oldmodel.MainPicture = updatingmodel.MainPicture;
             await _userManager.UpdateAsync(oldmodel);
         }
+        public async Task UpdatePassword(string email, string newpassword)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            await _userManager.ResetPasswordAsync(user, token, newpassword);
+            await _userManager.UpdateAsync(user);
+        }
     }
 }

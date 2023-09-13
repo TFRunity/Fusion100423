@@ -1,5 +1,6 @@
 ﻿@model Order
-@inject IProductMethods<Product> _methods
+@inject IProductSubCategoryRepository<ProductSubCategory> _subCategoryMethods
+@inject IProductMethods<Product> _productMethods
 @inject UserManager<User> _userManager
 @{
     User user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -13,13 +14,14 @@
     <section class="row flex--wrap justify-content-sm-center">
         @foreach (ProductId productId in Model.ProductIds)
         {
-            Product product = await _methods.Get(productId.IdFromProduct);
+            Product product = await _productMethods.Get(productId.IdFromProduct);
+            OneProductSubCategory subCategory = await _subCategoryMethods.GetCurrent(productId.IdFromSubCategory, productId._Case);
             <div class="col-3 block-product justify-content-sm-center text-center">
                 <div class="justify-content-sm-center m-3">
                     @{
                         if (product.Url != null)
                         {
-                            <img src="@product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
+                            <img src="@subCategory.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
                         }
                         else
                         {
@@ -32,12 +34,12 @@
                 </h3>
                 <div class="p-1">
                     <h6 class="text-start" style="color: rgb(137 143 180);">
-                        @product.Description
+                        @subCategory.Feature
                     </h6>
                 </div>
                 <div class="row">
                     <h4 class="col-5 text-start p-1 m-2">
-                        @product.Price ₽
+                        @subCategory.Price ₽
                     </h4>
                 </div>
                 <div class="row">

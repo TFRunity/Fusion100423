@@ -1,71 +1,52 @@
 ﻿@model User
 @{
-    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+    OrderNavbarViewModel _viewmodel = new OrderNavbarViewModel() { Authentificated = false, Created = false };
 }
-@{await Html.RenderPartialAsync("_Navbar", viewModel);}
-<div>
-    <h2>@Model.UserName</h2>
-</div>
-<div>
-    <h2>@Model.FutureJob</h2>
-</div>
-<div>
-    <h2>@Model.Year</h2>
-</div>
-<div>
-    <h2>@Model.Description</h2>
-</div>
-<div>
-    <h2>Айди заказа @Model.CurrentOrderId</h2>
-</div>
-<div>
-    <h4>Фоточки человека</h4>
-    @{
-        if (Model.UsersPictures != null)
-        {
-            @foreach (UsersPicture picture in Model.UsersPictures)
-            {
-                <div>
-                    <img src="@picture.URL" />
-                    <a href="@Url.Action("DeletePicture", "Moderator", new { Id = picture.Id})">Удалить эту фотографию</a>
+<div class="log-in-out-background edit-background">
+    @{ await Html.RenderPartialAsync("_Navbar", _viewmodel);}
+    <div class="form-center-box">
+        <h1>Измените данные</h1>
+        <form method="post" asp-controller="Account" asp-action="Edit">
+            <div class="input-group">
+                <div class="input-field">
+                    <i class="fa-solid fa-user" style="color: #ff7300;"></i>
+                    <input asp-for="UserName" placeholder="Имя" />
+                    <span asp-validation-for="UserName"></span>
                 </div>
-            }
-        }
-    }
+                <div class="input-field ">
+                    <i class="fa-solid fa-user-doctor" style="color: #ff7300;"></i>
+                    <input asp-for="FutureJob" placeholder="Профессия" />
+                    <span asp-validation-for="FutureJob"></span>
+                </div>
+                <div class="input-field ">
+                    <i class="fa-solid fa-magnifying-glass-dollar" style="color: #ff7300;"></i>
+                    <input asp-for="Gradient" placeholder="Оконтовка для премиума" />
+                    <span asp-validation-for="Gradient"></span>
+                </div>
+                <div class="input-field">
+                    <i class="fa-regular fa-calendar-days" style="color: #ff7300;"></i>
+                    <input asp-for="Year" placeholder="Введите год рождения" />
+                    <span asp-validation-for="Year"></span>
+                </div>
+                <div class="input-field ">
+                    <i class="fa-brands fa-invision" style="color: #ff7300;"></i>
+                    <input asp-for="Description" placeholder="Описание" />
+                    <span asp-validation-for="Description"></span>
+                </div>
+                <div class="input-field ">
+                    <i class="fa-solid fa-at" style="color: #ff7300;"></i>
+                    <input asp-for="Email" placeholder="Почта" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div class="input-field">
+                    <i class="fa-regular fa-image" style="color: #ff7300;"></i>
+                    <input asp-for="MainPicture" placeholder="Фотография в вашем личном кабинете" />
+                    <span asp-validation-for="MainPicture"></span>
+                </div>
+                <div class="btn-field">
+                    <input type="submit" value="Сохранить" />
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<div>
-    <a href="@Url.Action("AddPicture", "Moderator", new { email = Model.Email } )">Добавить фотографию</a>
-</div>
-<form method="post" asp-action="EditedUser" asp-controller="Moderator">
-    <div>
-        <h2>Поменяйте имя</h2>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
-    </div>
-    <div>
-        <h2>Поменяйте описание</h2>
-        <label asp-for="Description"></label>
-        <input asp-for="Description" />
-    </div>
-    <div>
-        <h2>Поменяйте Работу</h2>
-        <label asp-for="FutureJob"></label>
-        <input asp-for="FutureJob" />
-    </div>
-    <div>
-        <h2>Поменяйте описание</h2>
-        <label asp-for="Year"></label>
-        <input asp-for="Year" />
-    </div>
-    <div>
-        <h2>Поменяйте почту</h2>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-    </div>
-    <div>
-        <h2>Поменяйте Главную картинку</h2>
-        <label asp-for="MainPicture"></label>
-        <input asp-for="MainPicture" />
-    </div>
-    <input type="submit" value="Save" />
-</form>

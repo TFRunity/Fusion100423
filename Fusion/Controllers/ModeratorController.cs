@@ -15,18 +15,19 @@ namespace Fusion.Controllers
     {
         private readonly IRepository<UsersPicture> _dBMethods;
         private readonly IUserRepository<User> _identityMethods;
-        public ModeratorController(IRepository<UsersPicture> dBMethods, IUserRepository<User> identityMethods)
+        private readonly IUserMethods<UserAtSite> _userMethods;
+        public ModeratorController(IRepository<UsersPicture> dBMethods, IUserRepository<User> identityMethods, IUserMethods<UserAtSite> userMethods)
         {
             _dBMethods = dBMethods;
             _identityMethods = identityMethods;
+            _userMethods = userMethods;
         }
         [HttpGet]
         public IActionResult List()
         {
-            List<User> users = _identityMethods.GetAll();
+            List<UserAtSite> users = _userMethods.GetAll();
             return View(users);
         }
-        //Сюда попасть через ссылку в List
         [HttpGet]
         public async Task<IActionResult> EditUser(string email)
         {
@@ -55,10 +56,10 @@ namespace Fusion.Controllers
         //
         public async Task<IActionResult> DeletePicture(Guid id)
         {
-            User user = _dBMethods.Get(id).User;
             await _dBMethods.Delete(id);
             return RedirectToAction(nameof(List));
         }
+        [HttpGet]
         public IActionResult AddPicture(string email)
         {
             AddPictureViewModel model = new AddPictureViewModel { Email = email };

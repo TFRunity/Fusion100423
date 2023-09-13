@@ -40,7 +40,7 @@ namespace Fusion.DatabaseMethods
 
         public async Task<List<Category>> GetAll()
         {
-            List<Category> categories = await _context.Categories.Include(c => c.ProductCategories).ToListAsync();
+            List<Category> categories = await _context.Categories.Include(c => c.ProductCategories).ThenInclude(d => d.Product).ThenInclude(e => e.ProductSubCategories).ToListAsync();
             return categories;
         }
         

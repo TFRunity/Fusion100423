@@ -3,31 +3,14 @@
     OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
 }
 @{await Html.RenderPartialAsync("_Navbar", viewModel);}
-@{
-    int i = 0;
-}
-@{
-    <div>
-        @{
-            if (Model != null)
-            {
-                @foreach (UsersPicture picture in Model)
-                {
-                    i++;
-                    <img src="@picture.URL" />
-                    <h1>Картинка номер @i</h1>
-                }
-            }
-            else
-            {
-                <a href="@Url.Action("List", "Moderator")">
-                    <h2>
-                        Картинок нету, нельзя их вывести.
-                        Попробуй добавить их
-                    </h2>
-                </a>
-            }
+<div class="container d-flex flex-wrap">
+    @{ 
+        foreach (UsersPicture picture in Model)
+        {
+        <div class="col-2 ms-3 me-3 rounded-2 d-flex flex-wrap">
+            <img src="@picture.URL" class="img-fluid rounded-1 anim"/>
+            <a href="@Url.Action("DeletePicture","Moderator", new { id = picture.Id })" class="btn btn-danger p-2">Удалить</a>
+        </div>
         }
-    </div>
-
-}
+    }
+</div>

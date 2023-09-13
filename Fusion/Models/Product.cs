@@ -11,5 +11,6 @@ namespace Fusion.Models
         public string Description { get; set; }
         public string Url { get; set; }
         public virtual IList<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
+        public virtual ProductSubCategory ProductSubCategories { get; set; }
     }
 }

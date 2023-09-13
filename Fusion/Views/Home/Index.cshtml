@@ -25,6 +25,61 @@
     }
 }
 @{await Html.RenderPartialAsync("_Carousel"); }
+<div class="modal fade" id="exModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalTitle">Название продукта</h1>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Account" asp-action="Cart">
+                    <div class="visually-hidden">
+                        <input type="text" class="form-control" name="_ProductId" id="productid" />
+                        <input type="text" class="form-control" name="Email" id="email" />
+                        <input type="text" class="form-control" name="SubCategoryId" id="subcategoryid" />
+                    </div>
+                    <div class="d-flex flex--wrap col-md-9 justify-content-evenly container">
+                        <div class="col-md-3 col-sm-9">
+                            <img class="img-fluid align-self-center anim mt-3 img-product-prop" id="firstpic" />
+                            <div class="row justify-content-between">
+                                <h5 class="h5 mt-3" id="firstfeature"></h5>
+                                <h4 class="h4" id="firstprice">ы</h4>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="radio" name="_Case" value="First">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-9">
+                            <img class="img-fluid align-self-center anim mt-3 img-product-prop" id="secondpic" />
+                            <div class="row justify-content-between">
+                                <h5 class="h5 mt-3" id="secondfeature"></h5>
+                                <h4 class="h4" id="secondprice">ы</h4>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="radio" name="_Case" value="Second" checked>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-9">
+                            <img class="img-fluid align-self-center anim mt-3 img-product-prop" id="thirdpic" />
+                            <div class="row justify-content-between">
+                                <h5 class="h5 mt-3" id="thirdfeature"></h5>
+                                <h4 class="h4" id="thirdprice">ы</h4>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="radio" name="_Case" value="Third">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer p-2 mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-success">Заказать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @{
     if (Model != null)
     {
@@ -40,6 +95,7 @@
                     <div class="col-3 block-product justify-content-sm-center text-center">
                         <div class="justify-content-sm-center m-3">
                             @{
+                                //Доделать: дизайн для изменения юзера, адаптация под мобилку
                                 if (product.Product.Url != null)
                                 {
                                     <img src="@product.Product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
@@ -65,14 +121,17 @@
                             @{
                                 if (authentificated)
                                 {
-                                    <a class="btn btn-primary btn-sm col-6 p-2 text-center align-self-center" href="@Url.Action("Cart","Account", new { UserEmail = _user.Email, ProductId = product.ProductId })" style="background-color: orange; border-radius: 10px; border-color: red;" role="button">В корзину</a>
+                                    if (product.Product.ProductSubCategories.ThirdUrl != null && product.Product.ProductSubCategories.ThirdUrl != "")
+                                    {
+                                        <button class="btn btn-primary btn-sm col-6 p-2 text-center align-self-center" type="button" data-bs-toggle="modal" data-bs-name="@product.Product.Name" data-bs-target="#exModal" data-bs-productid="@product.Product.Id" data-bs-subcategoryid="@product.Product.ProductSubCategories.Id" data-bs-email="@_user.Email" data-bs-firsturl="@product.Product.ProductSubCategories.FirstUrl" data-bs-secondurl="@product.Product.ProductSubCategories.SecondUrl" data-bs-thirdurl="@product.Product.ProductSubCategories.ThirdUrl" data-bs-firstfeature="@product.Product.ProductSubCategories.FirstFeature" data-bs-secondfeature="@product.Product.ProductSubCategories.SecondFeature" data-bs-thirdfeature="@product.Product.ProductSubCategories.ThirdFeature" data-bs-firstprice="@product.Product.ProductSubCategories.FirstPrice" data-bs-secondprice="@product.Product.ProductSubCategories.SecondPrice" data-bs-thirdprice="@product.Product.ProductSubCategories.ThirdPrice" style="background-color: orange; border-radius: 10px; border-color: red;">В корзину</button>
+                                    }
                                 }
                                 else
                                 {
                                     <a class="btn btn-primary btn-sm col-6 p-2 text-center align-self-center" href="@Url.Action("Login","Account")" style="background-color: orange; border-radius: 10px; border-color: red;">В корзину</a>
                                 }
                             }
-                            
+
                         </div>
                     </div>
                     }
@@ -84,7 +143,6 @@
 }
 <div class="container">
     <footer class="py-3 my-4">
-        <p class="text-center text-body-secondary">© 2023 TFRunity Inc</p>
-        <a href="https://github.com/TFRunity/Fusion100423"><i class="fa-brands fa-github"></i>></a>
+        <p class="text-center text-body-secondary">© 2023 TFRunity Inc  <a href="https://github.com/TFRunity/Fusion100423" class="text-decoration-none"><i class="fa-brands fa-github"></i></a></p>
     </footer>
 </div>

@@ -15,11 +15,13 @@ namespace Fusion.Controllers
         private readonly IProductMethods<Product> _productMethods;
         private readonly ICategoryMethods<Category> _categoryMethods;
         private readonly IProductCategoryMethods<ProductCategory> _relationshipsMethods;
-        public ProductModeratorController(IProductMethods<Product> productMethods, ICategoryMethods<Category> categoryMethods, IProductCategoryMethods<ProductCategory> productCategoryMethods)
+        private readonly IProductSubCategoryRepository<ProductSubCategory> _subCategoryMethods;
+        public ProductModeratorController(IProductMethods<Product> productMethods, ICategoryMethods<Category> categoryMethods, IProductCategoryMethods<ProductCategory> productCategoryMethods,IProductSubCategoryRepository<ProductSubCategory> subCategoryMethods)
         {
             _productMethods = productMethods;
             _categoryMethods = categoryMethods;
             _relationshipsMethods = productCategoryMethods;
+            _subCategoryMethods = subCategoryMethods;
         }
 
 
@@ -205,9 +207,54 @@ namespace Fusion.Controllers
         }
         public async Task<IActionResult> DeleteProductRelationship(Guid productId, Guid categoryId)
         {
-            await _relationshipsMethods.DeleteRelationship(productId,categoryId);
+            await _relationshipsMethods.DeleteRelationship(productId, categoryId);
             return RedirectToAction(nameof(ListProduct));
         }
         //Написать методы создания связи и удаления связи ( action )
+
+        //SubCategoryMethods
+        [HttpGet]
+        public async Task<IActionResult> AddSubCategory(Guid productId)
+        {
+            Product product = await _productMethods.Get(productId);
+            if (product.ProductSubCategories == null)
+            {
+                SubCategoryViewModel _viewModel = new SubCategoryViewModel()
+                {
+                    ProductId = productId,
+                    _Case = "First"
+                };
+                return View(_viewModel);
+            }
+            string _Case = await _subCategoryMethods.GetCase(product.ProductSubCategories.Id);
+            SubCategoryViewModel viewModel = new SubCategoryViewModel() {
+                ProductId = productId,
+                ProductSubCategoryId = product.ProductSubCategories.Id
+            };
+            if (_Case == "First")
+                viewModel._Case = "Second";
+            if (_Case == "Second")
+                viewModel._Case = "Third";
+            if (_Case == "Third")
+                return RedirectToAction(nameof(UpdateSubCategory), new { subCategoryId = viewModel.ProductSubCategoryId } );
+            return View(viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddSubCategory(SubCategoryViewModel viewModel)
+        {
+            await _subCategoryMethods.Create(viewModel);
+            return RedirectToAction(nameof(ListProduct));
+        }
+        [HttpGet]
+        public async Task<IActionResult> UpdateSubCategory(Guid subCategoryId)
+        {
+            return View(await _subCategoryMethods.Get(subCategoryId));
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateSubCategory(SubCategoryViewModel viewModel)
+        {
+            await _subCategoryMethods.Update(viewModel);
+            return RedirectToAction(nameof(UpdateSubCategory), new { subCategoryId = viewModel.ProductSubCategoryId });
+        }
     }
 }

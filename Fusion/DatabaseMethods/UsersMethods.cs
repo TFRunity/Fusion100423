@@ -1,31 +1,34 @@
 ﻿using Fusion.Interfaces;
 using Fusion.Models;
+using Fusion.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Fusion.DatabaseMethods
 {
-    public class UsersMethods : IUserMethods
+    public class UsersMethods<T> : IUserMethods<T> where T : UserAtSite
     {
         private readonly UserManager<User> _userManager;
         public UsersMethods(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
-        public UserAtSite GetCurrentSiteUser(string name)
+        public async Task<T> GetCurrent(string email)
         {
-            User user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
+            User user = await _userManager.FindByEmailAsync(email);
             UserAtSite userAtSite = new UserAtSite(user);
-            return userAtSite;
+            return (T)userAtSite;
         }
 
-        public List<UserAtSite> GetAllSiteUsers()
+        public List<T> GetAll()
         {
-            List<UserAtSite> users = new List<UserAtSite>();
+            List<T> users = new List<T>();
             foreach(User user in _userManager.Users)
             {
-                UserAtSite atSite = new UserAtSite(user);
-                users.Add(atSite);
+                UserAtSite userAtSite = new UserAtSite(user);
+                T _user = (T)userAtSite;
+                users.Add(_user);
             }
             return users;
         }

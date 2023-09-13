@@ -1,0 +1,87 @@
+﻿@model ProductSubCategory
+@{
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+}
+<div class="log-in-out-background add-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="container mt-4 col-12 d-flex ">
+        <div class="col-4">
+            <div>
+                <form asp-action="UpdateSubCategory" asp-controller="ProductModerator" method="post">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <i class="fa-solid fa-ruble-sign" style="color: #ff7300;"></i>
+                            <input name="Price" type="number" placeholder="Цена" value="@Model.FirstPrice" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-brands fa-discourse" style="color: #ff7300;"></i>
+                            <input name="Feature" type="text" placeholder="Описание" value="@Model.FirstFeature" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-code" style="color: #ff7300;"></i>
+                            <input name="Url" placeholder="Ссылка на картинку" value="@Model.FirstUrl" />
+                        </div>
+                        <input asp-for="ProductId" type="hidden" />
+                        <input name="ProductSubCategoryId" value="@Model.Id" type="hidden" />
+                        <input name="_Case" value="First" type="hidden" />
+                        <div class="btn-field">
+                            <input type="submit" value="Обновить" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-4">
+            <div>
+                <form asp-action="UpdateSubCategory" asp-controller="ProductModerator" method="post">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <i class="fa-solid fa-ruble-sign" style="color: #ff7300;"></i>
+                            <input name="Price" type="number" placeholder="Цена" value="@Model.SecondPrice" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-brands fa-discourse" style="color: #ff7300;"></i>
+                            <input name="Feature" type="text" placeholder="Описание" value="@Model.SecondFeature" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-code" style="color: #ff7300;"></i>
+                            <input name="Url" placeholder="Ссылка на картинку" value="@Model.SecondUrl" />
+                        </div>
+                        <input asp-for="ProductId" type="hidden" />
+                        <input name="ProductSubCategoryId" value="@Model.Id" type="hidden" />
+                        <input name="_Case" value="Second" type="hidden" />
+                        <div class="btn-field">
+                            <input type="submit" value="Обновить" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-4">
+            <div>
+                <form asp-action="UpdateSubCategory" asp-controller="ProductModerator" method="post">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <i class="fa-solid fa-ruble-sign" style="color: #ff7300;"></i>
+                            <input name="Price" type="number" placeholder="Цена" value="@Model.ThirdPrice" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-brands fa-discourse" style="color: #ff7300;"></i>
+                            <input name="Feature" type="text" placeholder="Описание" value="@Model.ThirdFeature" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-code" style="color: #ff7300;"></i>
+                            <input name="Url" placeholder="Ссылка на картинку" value="@Model.ThirdUrl" />
+                        </div>
+                        <input asp-for="ProductId" type="hidden" />
+                        <input name="ProductSubCategoryId" value="@Model.Id" type="hidden" />
+                        <input name="_Case" value="Third" type="hidden" />
+                        <div class="btn-field">
+                            <input type="submit" value="Обновить" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

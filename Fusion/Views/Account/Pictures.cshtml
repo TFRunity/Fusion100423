@@ -1,0 +1,35 @@
+﻿@model UserAtSite
+@{
+    bool authentificated = User.Identity.IsAuthenticated;
+    if (authentificated == true)
+    {
+        OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = true, OrderId = Model.OrderId, Email = Model.Email };
+        if (ViewBag.Created == false)
+        {
+            viewModel.Created = false;
+        }
+        else
+        {
+            viewModel.Created = true;
+        }
+        await Html.RenderPartialAsync("_Navbar", viewModel);
+    }
+    else
+    {
+        OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
+        await Html.RenderPartialAsync("_Navbar", viewModel);
+    }
+}
+<div class="d-flex flex-row justify-content-center mt-3">
+    <h2 class="text-center">Фотографируйтесь с нашей пиццей и учавствуйте в еженедельных розыгрышах!</h2>
+</div>
+<div class="container mt-3 flex-wrap">
+    @{ 
+        foreach (UsersPicture picture in Model.UserPictures)
+        {
+        <div class="col-3 justify-content-center">
+            <img class="img-fluid" src="@picture.URL"/>
+        </div>
+        }
+    }
+</div>

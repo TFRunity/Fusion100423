@@ -33,14 +33,20 @@ namespace Fusion.DatabaseMethods
 
         public async Task<Product> Get(Guid id)
         {
-            List<Product> products = await _context.Products.Include(c => c.ProductCategories).ToListAsync();
+            List<Product> products = await _context.Products
+                .Include(c => c.ProductCategories)
+                .Include(d => d.ProductSubCategories)
+                .ToListAsync();
             Product product = products.Where(s => s.Id == id).FirstOrDefault();
             return product;
         }
 
         public async Task<List<Product>> GetAll()
         {
-            List<Product> products = await _context.Products.Include(c => c.ProductCategories).ToListAsync();
+            List<Product> products = await _context.Products
+                .Include(c => c.ProductCategories)
+                .Include(d => d.ProductSubCategories)
+                .ToListAsync();
             return products;
         }
 
@@ -48,7 +54,6 @@ namespace Fusion.DatabaseMethods
         {
             Product product = await Get(updatingproduct.Id);
             product.Name = updatingproduct.Name;
-            product.Price = updatingproduct.Price;
             product.Description = updatingproduct.Description;
             product.Url = updatingproduct.Url;
             await _context.SaveChangesAsync();

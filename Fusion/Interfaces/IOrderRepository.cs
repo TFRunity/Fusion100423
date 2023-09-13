@@ -9,8 +9,7 @@ namespace Fusion.Interfaces
 {
     public interface IOrderRepository<T> where T : class
     {
-        public Task Create(Guid productId, string email);
-        public Task Add(Guid orderId, Guid productId);
+        public Task Create(CreateOrderItemViewModel viewModel);
         public Task Update(T updatingOrder);
         public Task ConfirmOrder(Guid OrderId, string Email);
         public Task<bool> Delete(Guid orderId);

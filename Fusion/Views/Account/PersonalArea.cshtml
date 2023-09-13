@@ -1,10 +1,10 @@
-﻿@model User
+﻿@model UserAtSite
 @inject IProductMethods<Product> _methods
 @{ 
     OrderNavbarViewModel viewModel = new OrderNavbarViewModel();
-    if (Model.CurrentOrderId != Guid.Empty)
+    if (Model.OrderId != Guid.Empty)
     {
-        OrderNavbarViewModel _viewModel = new OrderNavbarViewModel() { OrderId = Model.CurrentOrderId, Authentificated = true, Email = Model.Email };
+        OrderNavbarViewModel _viewModel = new OrderNavbarViewModel() { OrderId = Model.OrderId, Authentificated = true, Email = Model.Email };
         viewModel = _viewModel;
     }
     else
@@ -14,63 +14,26 @@
     }
 }
 @{await Html.RenderPartialAsync("_Navbar", viewModel);}
-@{
-    foreach (Order order in Model.Orders)
-    {
-        <section class="container mt-4">
-            <h2>
-                Заказ от: @order.Done
-            </h2>
-            <div class="mt-3 container row-cols-4">
-                @{
-                    foreach (ProductId productid in order.ProductIds)
-                    {
-                        Product product = await _methods.Get(productid.IdFromProduct);
-                        <div class="col-3 block-product justify-content-sm-center text-center">
-                            <div class="justify-content-sm-center m-3">
-                                @{
-                                    if (product.Url != null)
-                                    {
-                                        <img src="@product.Url" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
-                                    }
-                                    else
-                                    {
-                                        <img src="assets/img/logo.jpg" class="img-fluid align-self-center anim" style="border-radius: 15px;" />
-                                    }
-                                }
-                            </div>
-                            <h3 class="text-start">
-                                @product.Name
-                            </h3>
-                            <div class="p-1">
-                                <h6 class="text-start" style="color: rgb(137 143 180);">
-                                    @product.Description
-                                </h6>
-                            </div>
-                            <div class="row">
-                                <h4 class="col-5 text-start p-1 m-2">
-                                    @product.Price ₽
-                                </h4>
-                                <h4 class="col-5 text-start p-1 m-2">
-                                    @productid.CurrentCount Шт
-                                </h4>
-                                <h4 class="col-5 text-start p-1 m-2">
-                                    @{ int price = (productid.CurrentCount * product.Price); }
-                                    @price ₽
-                                </h4>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
-        </section>
-        <div class="container col-2 text-end justify-content-end">
-            <h3>Всего: @order.TotalPrice</h3>
-        </div>
-    }
-}
-<div class="d-flex flex-row justify-content-end" >
-    <a href="@Url.Action("Logout","Account")" class="btn btn-danger col-2 p-2 m-0"><h3 class="me-3">Выйти</h3></a>
+<div class="container mt-4">
+    <div class="flex-row d-flex justify-content-center ">
+        @{
+            if (Model.MainPicture != null)
+            {
+                <img class="img-fluid col-3 rounded-1" src="@Model.MainPicture" />
+            }
+            else
+            {
+                <img class="img-fluid col-3 rounded-1" src="/assets/img/logos.jpg" />
+            }
+        }
+    </div>
+</div>
+<div class="d-flex flex-row justify-content-evenly flex-wrap mt-4">
+    @*Добавить несколько кнопок с вьюхами и 1 кнопку на index страничку *@
+    <a href="@Url.Action("Editpassword","Account", new { email = Model.Email })" class="btn btn-outline-info col-2 p-2 m-0"><i class="fa-solid fa-lock "></i><h3 class="me-3">Изменить пароль</h3></a>
+    <a href="@Url.Action("OrderHistory","Account", new { email = Model.Email })" class="btn btn-outline-primary col-2 p-2 m-0"><i class="fa-solid fa-clock-rotate-left"></i><h3 class="ms-3">История заказов</h3></a>
+    <a href="@Url.Action("Edit","Account", new { email = Model.Email })" class="btn btn-outline-warning col-2 p-2 m-0"><i class="fa-solid fa-user-plus"></i><h3 class="me-3 ms-3">Изменить данные</h3></a>
+    <a href="@Url.Action("Logout","Account")" class="btn btn-outline-danger col-2 p-2 m-0"><i class="fa-solid fa-door-open"></i><h3 class="me-3">Выйти</h3></a>
 </div>
 
 

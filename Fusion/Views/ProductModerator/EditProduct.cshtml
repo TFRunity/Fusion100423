@@ -10,27 +10,21 @@
             <div class="input-group">
                 <label asp-for="Name"></label>
                 <div class="input-field">
-                    <i class="fa-solid fa-pizza-slice"></i>
+                    <i class="fa-solid fa-pizza-slice" style="color: #ff7300;"></i>
                     <input asp-for="Name" placeholder="Название" />
                     <span asp-validation-for="Name"></span>
                 </div>
                 <label asp-for="Description"></label>
                 <div class="input-field">
-                    <i class="fa-brands fa-discourse"></i>
+                    <i class="fa-brands fa-discourse" style="color: #ff7300;"></i>
                     <input asp-for="Description" placeholder="Описание" />
                     <span asp-validation-for="Description"></span>
                 </div>
                 <label asp-for="Url"></label>
                 <div class="input-field">
-                    <i class="fa-solid fa-code"></i>
+                    <i class="fa-solid fa-code" style="color: #ff7300;"></i>
                     <input asp-for="Url" placeholder="Ссылка на картинку" />
                     <span asp-validation-for="Url"></span>
-                </div>
-                <label asp-for="Price"></label>
-                <div class="input-field">
-                    <i class="fa-solid fa-ruble-sign"></i>
-                    <input asp-for="Price" placeholder="Цена" />
-                    <span asp-validation-for="Price"></span>
                 </div>
                 <label asp-for="Id" style="visibility: hidden"></label>
                 <div class="input-field" style="visibility: hidden">

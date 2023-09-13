@@ -4,44 +4,37 @@
 }
 <div class="log-in-out-background edit-background">
     @{await Html.RenderPartialAsync("_Navbar", viewModel);}
-    <div class="form-category" style="max-height: auto">
+    <div class="container mh-100 mt-3">
         @{
             if (Model != null)
                 foreach (Category category in Model)
                 {
-                    <div class="mini-flex-container">
-                        <div class="left">
-                            <h1>@category.Name</h1>
-                        </div>
+                    <div class="row justify-content-between">
+                        <h3 class="col-1">@category.Name</h3>
                         @if (category.ProductCategories != null)
                         {
-                            <h2>Все продукты, связанные с этой категорией</h2>
-                            @foreach (ProductCategory relationship in category.ProductCategories)
-                            {
-                                <div>
-                                    <h3>@relationship.Product.Name</h3>
-                                </div>
-                                <a href="@Url.Action()"><h4>Удалить эту связь</h4></a>
-                            }
-                            //Добавить изменение связи (удалить/добавить связь)
+                            <div class="d-flex flex-row col-4 flex-wrap">
+                                <h4>Продукты с этой категорией</h4>
+                        @foreach (ProductCategory relationship in category.ProductCategories)
+                        {
+                                <h5 class="me-4">@relationship.Product.Name</h5>
+                                <a class="btn btn-danger" href="@Url.Action("DeleteProductRelationship","ProductModerator", new { productId = relationship.ProductId, categoryId = relationship.CategoryId})">Удалить связь</a>
+                        }
+                            </div>
                         }
                         else
                         {
-                            <div>
-                                <h3>У категории нет продуктов</h3>
-                            </div>
+                            <h3 class="col-3">У категории нет продуктов</h3>
                         }
                     </div>
-                    <a class="a-button" href="@Url.Action("EditCategory", "ProductModerator", new { id = category.Id})"><h3>Изменить</h3></a>
-                    <a class="a-button" href="@Url.Action("DeleteCategory","ProductModerator", new { id = category.Id})"><h3>Удалить</h3></a>
+                    <div class="col-3">
+                        <a class="btn btn-success" href="@Url.Action("EditCategory", "ProductModerator", new { id = category.Id})">Изменить</a>
+                        <a class="btn btn-danger" href="@Url.Action("DeleteCategory","ProductModerator", new { id = category.Id})">Удалить</a>
+                    </div>
                 }
         }
-        <div class="mini-flex-container">
-            <a class="a-button" href="@Url.Action("CreateCategory", "ProductModerator")">
-                <h3>
-                    Создать категорию
-                </h3>
-            </a>
+        <div class="d-flex flex-row justify-content-end mt-4">
+            <a class="btn btn-primary p-4" href="@Url.Action("CreateCategory", "ProductModerator")"><h3>Создать категорию</h3></a>
         </div>
     </div>
 </div>

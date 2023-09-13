@@ -2,16 +2,22 @@
 @{
     OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = false };
 }
-@{await Html.RenderPartialAsync("_Navbar", viewModel);}
-<form asp-action="AddPicture" asp-controller="Moderator" asp-antiforgery="true" method="post">
-    <div>
-        <label asp-for="Url">Основной путь к фотографии</label>
-        <input asp-for="Url" />
-        <span asp-validation-for="Url"></span>
+<div class="log-in-out-background">
+    @{await Html.RenderPartialAsync("_Navbar", viewModel);}
+    <div class="form-center-box">
+        <h2>Добавьте ссылку на фотографию</h2>
+        <form asp-action="AddPicture" asp-controller="Moderator" asp-antiforgery="true" method="post">
+            <div class="input-group">
+                <div class="input-field">
+                    <i class="fa-solid fa-user" style="color: #ff7300;"></i>
+                    <input asp-for="Url" placeholder="Url" />
+                    <span asp-validation-for="Url"></span>
+                </div>
+                <input asp-for="Email" type="hidden" />
+                <div class="btn-field">
+                    <input type="submit" value="Сохранить"/>
+                </div>
+            </div>
+        </form>
     </div>
-    <div>
-        <h3>@Model.Email</h3>
-        <input asp-for="Email" type="hidden" />
-    </div>
-    <button type="submit" value="Save"><h4>Сохранить фотографию</h4></button>
-</form>
+</div>

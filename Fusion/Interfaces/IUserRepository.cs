@@ -11,5 +11,6 @@ namespace Fusion.Interfaces
         public Task<T> Get(string email);
         public List<T> GetAll();
         public Task Update(T updatingmodel);
+        public Task UpdatePassword(string email, string newpassword);
     }
 }

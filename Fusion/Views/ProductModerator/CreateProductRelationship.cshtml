@@ -9,13 +9,13 @@
 }
 <div class="log-in-out-background add-background">
     @{await Html.RenderPartialAsync("_Navbar", viewModel);}
-    <div class="mini-flex-container">
+    <div class="container mh-100 flex-column d-flex">
         @{
             foreach (Category category in categories)
             {
-                <div class="mini-flex-container">
-                    <h3>@category.Name</h3>
-                    <a class="a-button" href="@Url.Action("CreateProductRelationships", "ProductModerator", new { productId = Model.Id, categoryId = category.Id })"><h3>Закрепить</h3></a>
+                <div class="col-3 justify-content-between">
+                    <h2>@category.Name</h2>
+                    <a class="btn btn-success p-3" href="@Url.Action("CreateProductRelationships", "ProductModerator", new { productId = Model.Id, categoryId = category.Id })"><h3>Закрепить</h3></a>
                 </div>
             }
         }

@@ -1,0 +1,54 @@
+﻿@model List<GalleryUser>
+@{
+    string Email = ViewBag.email;
+    Guid OrderId = ViewBag.orderId;
+    OrderNavbarViewModel viewModel = new OrderNavbarViewModel() { Authentificated = true, Email = Email, OrderId = OrderId };
+    if (ViewBag.created == false)
+    {
+        viewModel.Created = false;
+    }
+    else
+    {
+        viewModel.Created = true;
+    }
+}
+@{await Html.RenderPartialAsync("_Navbar", viewModel);}
+@{
+    if (Model != null)
+    {
+        <div class="d-flex justify-content-center align-content-center w-100">
+            <h2>Фотографии от наших постоянных клиентов:</h2>
+        </div>
+        <div class="container flex-wrap col-12">
+            @{
+                foreach (GalleryUser user in Model)
+                {
+                    if (user.UsersPictures != null)
+                    {
+                        <h2 class="col-12 justify-content-center align-content-center">@user.Name</h2>
+                        <div class="flex-row d-flex flex-wrap">
+                            <div>
+                                @{
+                                    foreach (UsersPicture picture in user.UsersPictures)
+                                    {
+                                        <div class="col-2 mt-3 me-3 d-flex">
+                                            <img src="@picture.URL" class="img-fluid rounded-3 anim" />
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center text-center text-info align-content-center">
+            <h2>Ещё никто не делал фотографии с нашим продуктом</h2>
+            <p>Станьте первым!</p>
+            <a href="@Url.Action("Picture","Account", new { email = Email })" class="btn btn-warning p-3 "><p>Клик</p></a>
+        </div>
+    }
+}

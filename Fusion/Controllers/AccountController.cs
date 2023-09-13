@@ -19,13 +19,15 @@ namespace Fusion.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IOrderRepository<Order> _orderRepository;
         private readonly IUserRepository<User> _userMethods;
+        private readonly IRepository<UsersPicture> _pictureRepository;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IOrderRepository<Order> orderRepository, IUserRepository<User> userMethods)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IOrderRepository<Order> orderRepository, IUserRepository<User> userMethods, IRepository<UsersPicture> pictureRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _orderRepository = orderRepository;
             _userMethods = userMethods;
+            _pictureRepository = pictureRepository;
         }
 
         //Authentification Methods
@@ -63,7 +65,8 @@ namespace Fusion.Controllers
         public async Task<IActionResult> PersonalArea(string email)
         {
             User user = await _userManager.FindByEmailAsync(email);
-            return View(user);
+            UserAtSite atSite = new UserAtSite(user);
+            return View(atSite);
         }
         [Authorize(Policy = "Manager")]
         public IActionResult AdminArea()
@@ -106,52 +109,126 @@ namespace Fusion.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
-
-        //1.Страничка с просмотром заказа 
-        //2.Личный кабинет, в котором отслеживаются прошлые заказы
-        //3.Страничка, создающая сам заказ (сделано)
-
-        /// <summary>
-        /// First method called by user, which creates First Order (Call if user's CurrentOrderId == null)
-        /// </summary>
-        /// <returns>Relate to MainView</returns>
-        public async Task<IActionResult> Cart(string UserEmail, Guid ProductId)
+        [Authorize(Policy = "Member")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(string email)
         {
-            await _orderRepository.Create(ProductId, UserEmail);
+            User user = await _userMethods.Get(email);
+            return View(user);
+        }
+        [Authorize(Policy = "Member")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(User user)
+        {
+            await _userMethods.Update(user);
+            return RedirectToAction(nameof(PersonalArea), new { email = user.Email });
+        }
+        [Authorize(Policy = "Member")]
+        [HttpGet]
+        public async Task<IActionResult> EditPassword(string email)
+        {
+            User user = await _userMethods.Get(email);
+            ChangePassword viewmodel = new ChangePassword() { Email = user.Email };
+            return View(viewmodel);
+        }
+        [Authorize(Policy = "Member")]
+        [HttpPost]
+        public async Task<IActionResult> EditPassword(ChangePassword viewmodel)
+        {
+            await _userMethods.UpdatePassword(viewmodel.Email, viewmodel.Password);
+            return RedirectToAction(nameof(PersonalArea), new { email = viewmodel.Email });
+        }
+        [Authorize(Policy = "Member")]
+        public async Task<IActionResult> Pictures(string email)
+        {
+            User user = await _userMethods.Get(email);
+            UserAtSite atSite = new UserAtSite(user);
+            return View(atSite);
+        }
+        public async Task<IActionResult> Cart(CreateOrderItemViewModel viewModel)
+        {
+            await _orderRepository.Create(viewModel);
             return RedirectToAction("Index", "Home");
         }
+        [Authorize(Policy = "Member")]
         [HttpGet]
         public async Task<IActionResult> Order(Guid OrderId)
         {
             return View(await _orderRepository.Get(OrderId));
         }
+        [Authorize(Policy = "Member")]
         [HttpPost]
         public async Task<IActionResult> Order(Order order)
         {
             await _orderRepository.Update(order);
             return RedirectToAction("Index", "Home");
         }
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> DeleteProduct(Guid ProductId, Guid OrderId)
         {
             await _orderRepository.DeleteObjFromOrder(ProductId);
             return RedirectToAction(nameof(Order), new { OrderId = OrderId });
         }
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> ConfirmOrder(Guid orderId, string email)
         {
             await _orderRepository.ConfirmOrder(orderId, email);
             return RedirectToAction(nameof(PersonalArea), new { email = email });
         }
+        [Authorize(Policy = "Member")]
         [HttpPost]
         public async Task<IActionResult> ChangeCount(CounterViewModel viewModel)
         {
             await _orderRepository.ChangeCount(viewModel);
             return RedirectToAction(nameof(Order), new { OrderId = viewModel.OrderId });
         }
+        [Authorize(Policy = "Member")]
         public async Task<IActionResult> ClearOrder(Guid orderId)
         {
             await _orderRepository.Clear(orderId);
             return RedirectToAction(nameof(Order), new { OrderId = orderId });
+        }
+        [Authorize(Policy = "Member")]
+        public async Task<IActionResult> OrderHistory(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            UserAtSite userAtSite = new UserAtSite(user);
+            return View(userAtSite);
+        }
+        [Authorize(Policy = "Member")]
+        [HttpGet]
+        public async Task<IActionResult> Picture(string email)
+        {
+            User _user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (_user.CurrentOrderId != Guid.Empty)
+            {
+                ViewBag.Created = true;
+                ViewBag.OrderId = _user.CurrentOrderId;
+            }
+            else
+            {
+                ViewBag.Created = false;
+            }
+            AddPictureViewModel model = new AddPictureViewModel { Email = email };
+            return View(model);
+        }
+        [Authorize(Policy = "Member")]
+        [HttpPost]
+        public async  Task<IActionResult> Picture(AddPictureViewModel viewModel)
+        {
+            UsersPicture picture = new UsersPicture
+            {
+                URL = viewModel.Url,
+                User = await _userMethods.Get(viewModel.Email)
+            };
+            await _pictureRepository.Create(picture);
+            return RedirectToAction(nameof(PersonalArea), new { email = viewModel.Email });
+        }
+        [Authorize(Policy = "Member")]
+        public async Task<IActionResult> DeletePicture(Guid pictureId, string email)
+        {
+            await _pictureRepository.Delete(pictureId);
+            return RedirectToAction(nameof(PersonalArea), new { email = email });
         }
     }
 }

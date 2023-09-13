@@ -2,15 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\Fusion",
-    "\\Fusion\\Controllers",
     "\\Fusion\\Views",
-    "\\Fusion\\Views\\Account",
+    "\\Fusion\\Views\\Home",
     "\\Fusion\\Views\\ProductModerator",
     "\\Fusion\\Views\\Roles",
     "\\Fusion\\Views\\Shared",
     "\\Fusion\\wwwroot",
-    "\\Fusion\\wwwroot\\css"
+    "\\Fusion\\wwwroot\\css",
+    "\\Fusion\\wwwroot\\js"
   ],
-  "SelectedNode": "\\Fusion\\Controllers\\AccountController.cs",
+  "SelectedNode": "\\Fusion\\Views\\Home\\Index.cshtml",
   "PreviewInSolutionExplorer": false
 }

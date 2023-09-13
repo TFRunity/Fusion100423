@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Fusion.ViewModels;
 
 namespace Fusion.Controllers
 {
@@ -14,15 +15,15 @@ namespace Fusion.Controllers
     {
         private readonly ICategoryMethods<Category> _categoryMethods;
         private readonly UserManager<User> _userManager;
-        private readonly IUserMethods _userMethods;
-        private readonly IUserRepository<User> _userRepository;
+        private readonly IUserMethods<UserAtSite> _userMethods;
+        private readonly IUserMethods<GalleryUser> _galleryMethods;
 
-        public HomeController(UserManager<User> userManager, IUserMethods userMethods, ICategoryMethods<Category> categoryMethods, IUserRepository<User> userRepository)
+        public HomeController(UserManager<User> userManager, IUserMethods<UserAtSite> userMethods, ICategoryMethods<Category> categoryMethods, IUserMethods<GalleryUser> galleryMethods)
         {
             _userMethods = userMethods;
             _categoryMethods = categoryMethods;
-            _userRepository = userRepository;
             _userManager = userManager;
+            _galleryMethods = galleryMethods;
         }
         public async Task<IActionResult> Index()
         {
@@ -41,22 +42,30 @@ namespace Fusion.Controllers
             List<Category> categories = await _categoryMethods.GetAll();
             return View(categories);
         }
-        //Макет для создания/отображения зарегистрированных пользователей
-        public IActionResult UsersAtSite()
-        {
-            List<UserAtSite> users = _userMethods.GetAllSiteUsers();
-            return View(users);
-        }
         //ACCESS DENIED
         public IActionResult AccessDenied()
         {
             return View();
         }
-        //Посмотреть на конкретного пользователя ( со стороны НЕ администратора )
-        public IActionResult Visitors(string name)
+        [Authorize(Policy = "Member")]
+        public async Task<IActionResult> PictureGallery(string Email, Guid orderId)
         {
-            UserAtSite user = _userMethods.GetCurrentSiteUser(name);
-            return View(user);
+            if (User.Identity.IsAuthenticated)
+            {
+                User _user = await _userManager.FindByNameAsync(User.Identity.Name);
+                if (_user.CurrentOrderId != Guid.Empty)
+                {
+                    ViewBag.Created = true;
+                }
+                else
+                {
+                    ViewBag.Created = false;
+                }
+            }
+            List<GalleryUser> users = _galleryMethods.GetAll();
+            ViewBag.email = Email;
+            ViewBag.orderId = orderId;
+            return View(users);
         }
     }
 }

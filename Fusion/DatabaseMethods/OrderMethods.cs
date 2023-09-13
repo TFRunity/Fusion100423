@@ -16,21 +16,23 @@ namespace Fusion.DatabaseMethods
         private readonly IdentityDBContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IProductMethods<Product> _productMethods;
-        public OrderMethods(IdentityDBContext context, UserManager<User> userManager, IProductMethods<Product> productMethods)
+        private readonly IProductSubCategoryRepository<ProductSubCategory> _subCategoryMethods;
+        public OrderMethods(IdentityDBContext context, UserManager<User> userManager, IProductMethods<Product> productMethods, IProductSubCategoryRepository<ProductSubCategory>  subCategoryMethods)
         {
             _context = context;
             _userManager = userManager;
             _productMethods = productMethods;
+            _subCategoryMethods = subCategoryMethods;
         }
-        
-        public async Task Create(Guid productId, string email)
+        public async Task Create(CreateOrderItemViewModel viewModel)
         {
-            User user = await _userManager.FindByEmailAsync(email);
-            Product product = await _productMethods.Get(productId);
+            User user = await _userManager.FindByEmailAsync(viewModel.Email);
+            Product product = await _productMethods.Get(viewModel._ProductId);
+            OneProductSubCategory productSubCategory = await _subCategoryMethods.GetCurrent(viewModel.SubCategoryId, viewModel._Case);
             if (user.CurrentOrderId == Guid.Empty)
             {
                 Order order = new Order();
-                ProductId id = new ProductId() { IdFromProduct = productId, PriceFromProduct = product.Price};
+                ProductId id = new ProductId() { IdFromProduct = viewModel._ProductId, PriceFromProduct = productSubCategory.Price, IdFromSubCategory = viewModel.SubCategoryId, _Case = viewModel._Case };
                 await _context.ProductIds.AddAsync(id);
                 order.ProductIds.Add(id);
                 order.TotalPrice += id.PriceFromProduct * id.CurrentCount;
@@ -43,7 +45,7 @@ namespace Fusion.DatabaseMethods
             else
             {
                 Order order = await _context.Orders.FindAsync(user.CurrentOrderId);
-                ProductId id = new ProductId() { IdFromProduct = productId, PriceFromProduct = product.Price };
+                ProductId id = new ProductId() { IdFromProduct = viewModel._ProductId, PriceFromProduct = productSubCategory.Price, IdFromSubCategory = viewModel.SubCategoryId, _Case = viewModel._Case };
                 await _context.ProductIds.AddAsync(id);
                 order.ProductIds.Add(id);
                 order.TotalPrice += id.PriceFromProduct * id.CurrentCount;
@@ -59,7 +61,6 @@ namespace Fusion.DatabaseMethods
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return true;
-
         }
 
         public async Task<Order> Get(Guid orderId)
@@ -81,23 +82,12 @@ namespace Fusion.DatabaseMethods
             order.Done = updatingOrder.Done;
             await _context.SaveChangesAsync();
         }
-
         public async Task ConfirmOrder(Guid orderId, string email)
         {
             Order order = await Get(orderId);
             order.Paid = true;
             User user = await _userManager.FindByEmailAsync(email);
             user.CurrentOrderId = Guid.Empty;
-            await _context.SaveChangesAsync();
-        }
-
-        //бесполезная хрень
-        public async Task Add(Guid orderId, Guid productId)
-        {
-            Order order = await Get(orderId);
-            ProductId _productId = new ProductId() { IdFromProduct = productId };
-            await _context.ProductIds.AddAsync(_productId);
-            order.ProductIds.Add(_productId);
             await _context.SaveChangesAsync();
         }
 

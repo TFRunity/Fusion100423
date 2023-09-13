@@ -10,16 +10,16 @@
               asp-route-returnUrl="@Model.ReturnUrl">
             <div class="input-group">
                 <div class="input-field">
-                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-user" style="color: #ff7300;"></i>
                     <input asp-for="Name" placeholder="Имя" />
                     <span asp-validation-for="Name"></span>
                 </div>
                 <div class="input-field">
-                    <i class="fa-solid fa-lock"></i>
+                    <i class="fa-solid fa-lock" style="color: #ff7300;"></i>
                     <input asp-for="Password" placeholder="Пароль" />
                     <span asp-validation-for="Password"></span>
                 </div>
-                <div class="input-field w-50">
+                <div class="input-field w-50" style="color: #ff7300;">
                     <h6 style="color: #e19766">Запомнить меня</h6>
                     <input asp-for="RememberMe" />
                 </div>

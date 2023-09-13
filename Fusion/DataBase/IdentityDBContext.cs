@@ -10,7 +10,6 @@ namespace Fusion.DataBase
         public IdentityDBContext(DbContextOptions<IdentityDBContext> options)
             : base(options)
         {
-            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         public DbSet<UsersPicture> UsersPictures { get; set; }
@@ -19,6 +18,7 @@ namespace Fusion.DataBase
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductId> ProductIds { get; set; }
+        public DbSet<ProductSubCategory> ProductSubCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //User's relationships
@@ -40,6 +40,11 @@ namespace Fusion.DataBase
                 .WithOne(b => b.Order)
                 .HasForeignKey(c => c.OrderId)
                 .OnDelete(DeleteBehavior.SetNull);
+            //Ошибка может быть тут
+            modelBuilder.Entity<Product>()
+                .HasOne(a => a.ProductSubCategories)
+                .WithOne(b => b.Product)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //n : n relationships
 

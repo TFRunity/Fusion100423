@@ -1,7 +1,6 @@
 ﻿@model OrderNavbarViewModel
 @{
     bool authentificated = User.Identity.IsAuthenticated;
-
 }
 <nav class="nav-class nav-min">
     <div class="main-box row">
@@ -55,15 +54,23 @@
             }
         }
         @{await Html.RenderPartialAsync("_Cart", Model); }
-        <div class="col-md-1">
-            @{
-                if (authentificated)
-                {
-                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("PersonalArea","Account", new { email = Model.Email })"><i class="fa-solid fa-user"></i></a>
-                }
-                else
-                {
-                    <a class="button-basket align-content-center" data-size="medium" href="@Url.Action("Login","Account")"><i class="fa-solid fa-right-to-bracket"></i><h6 style="opacity: 0%">s</h6><i class="fa-solid fa-user"></i></a>
+    <div class="col-md-1 justify-content-center align-items-center">
+        @{
+            if (authentificated)
+            {
+                <div class="dropdown">
+                    <button class="button-basket dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-size="medium">
+                         <i class="fa-solid fa-user"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="@Url.Action("PersonalArea","Account", new { email = Model.Email })">Личный кабинет</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("OrderHistory","Account", new { email = Model.Email })">История заказов</a></li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                    <a class="button-basket" data-size="medium" href="@Url.Action("Login","Account")"><i class="fa-solid fa-right-to-bracket"></i><h6 style="opacity: 0%">s</h6><i class="fa-solid fa-user"></i></a>
                 }
             }
         </div>

@@ -12,6 +12,10 @@ a {
     background-image: url(https://dsgnmania.com/wp-content/uploads/2016/09/white2.jpg);
 }
 
+.cosmic-font {
+    color: maroon;
+}
+
 /*////////////////////////////////////////*/
 /*Не трогать, форма для логина/регистрации*/
 .log-in-out-background {
@@ -495,3 +499,10 @@ img .rot {
     .anim:hover {
         transform: translate(0px, 10px);
     }
+.img-carousel-blur {
+    backdrop-filter: blur(40px);
+}
+.img-product-prop {
+    height: 10em;
+    width: 11em;
+}

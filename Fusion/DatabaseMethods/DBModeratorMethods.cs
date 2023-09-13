@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Fusion.DatabaseMethods
 {
+    //Переделать, когда буду делать картинки пользователей
     public class DBModeratorMethods<T> : IRepository<T> where T: UsersPicture
     {
         private readonly IdentityDBContext _appDBContext;

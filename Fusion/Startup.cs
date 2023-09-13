@@ -12,6 +12,7 @@ using Fusion.DatabaseMethods;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Collections.Generic;
+using Fusion.ViewModels;
 
 namespace Fusion
 {
@@ -33,11 +34,13 @@ namespace Fusion
               .AddDefaultTokenProviders();
             services.AddScoped<IdentityDbContext<User, UserRole, Guid>, IdentityDBContext>();
             services.AddTransient<IRepository<UsersPicture>, DBModeratorMethods<UsersPicture>>();
-            services.AddTransient<IUserMethods, UsersMethods>();
+            services.AddTransient<IUserMethods<UserAtSite>, UsersMethods<UserAtSite>>();
+            services.AddTransient<IUserMethods<GalleryUser>, GalleryMethods<GalleryUser>>();
             services.AddTransient<IUserRepository<User>, DBUserMethods<User>>();
             services.AddTransient<IProductMethods<Product>, ProductMethods<Product>>();
             services.AddTransient<ICategoryMethods<Category>, CategoryMethods<Category>>();
             services.AddTransient<IProductCategoryMethods<ProductCategory>, ProductCategoryMethods<ProductCategory>>();
+            services.AddTransient<IProductSubCategoryRepository<ProductSubCategory>, ProductSubCategoryMethods<ProductSubCategory>>();
             services.AddTransient<IOrderRepository<Order>, OrderMethods<Order>>();
             services.ConfigureApplicationCookie(config =>
                 {
@@ -97,9 +100,6 @@ namespace Fusion
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
-                //endpoints.MapControllerRoute(  
-                //    name: "Moderator",      
-                //    pattern: "{controller=Moderator}/{action=List}/{FirstSiteModel?}");
                 endpoints.MapRazorPages();
             });
             //Убрать на релизе
@@ -168,13 +168,9 @@ namespace Fusion
             }
         }
     }
-    //P.S. Не ставил миграции, т.к. не имеет смысла(проект слишком маленький и нерасширяемый на большие масштабы)
 }
-//Весь оставшийся Бекэнд
-//TO DO: 
-//      1)Изменение через продукт
-//      2)Добавление продуктов в корзину, (если не аутентифицирован, то кидать на страничку login)
-//      2)=>3)Изменение внешнего дизайна и общего состояния вьюхи
-//      2)=>4)Просмотр заказов через отдельную страницу + личную страницу ( историю заказов )
-//      Tooltip Передавать айди ордера через ViewBag
-/////////////////////////////////////////////////////Сделать 2 свойство категории, чтобы адекватно прописывались названия
+//      (5 view)    Moderator Edituser
+//                  Moderator List
+//                  Moderator UsersPictures
+//      Mobile concept
+//      Разные типы продуктов в 1 продукте()

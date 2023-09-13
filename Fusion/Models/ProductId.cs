@@ -9,6 +9,8 @@ namespace Fusion.Models
     {
         public Guid Id { get; set; }
         public Guid IdFromProduct { get; set; }
+        public Guid IdFromSubCategory { get; set; }
+        public string _Case { get; set; }
         public int PriceFromProduct { get; set; }
         //Count of Products
         public int CurrentCount { get; set; } = 1;
